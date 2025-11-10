@@ -29,7 +29,9 @@ REDIS_PORT=6379
 ### 2. Start All Services
 
 ```bash
-docker-compose up -d
+docker-compose up --build
 ```
 
-The `-d` flag runs containers in the background.
+### 3. Access the API
+
+Open your browser and navigate to `http://localhost:8000/docs` to access the API documentation.
