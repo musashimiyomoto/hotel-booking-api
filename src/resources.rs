@@ -5,12 +5,7 @@ use crate::settings;
 pub async fn init_redis(
     settings: &settings::Settings,
 ) -> Result<redis::aio::MultiplexedConnection, redis::RedisError> {
-    let redis_url: String = format!(
-        "redis://{}:{}/{}",
-        settings.redis_host, settings.redis_port, settings.redis_db
-    );
-
-    let client: redis::Client = redis::Client::open(redis_url)?;
+    let client: redis::Client = redis::Client::open(settings.get_redis_url())?;
 
     let conn: redis::aio::MultiplexedConnection = client.get_multiplexed_async_connection().await?;
 
@@ -20,18 +15,9 @@ pub async fn init_redis(
 pub async fn init_postgres(
     settings: &settings::Settings,
 ) -> Result<sqlx::Pool<sqlx::Postgres>, sqlx::Error> {
-    let database_url: String = format!(
-        "postgres://{}:{}@{}:{}/{}",
-        settings.postgres_user,
-        settings.postgres_password,
-        settings.postgres_host,
-        settings.postgres_port,
-        settings.postgres_db,
-    );
-
     let pool: sqlx::Pool<sqlx::Postgres> = sqlx::postgres::PgPoolOptions::new()
         .max_connections(settings.postgres_max_pool.parse().unwrap())
-        .connect(&database_url)
+        .connect(&settings.get_postgres_url())
         .await?;
 
     let migrator: sqlx::migrate::Migrator = sqlx::migrate::Migrator::new(path::Path::new(concat!(

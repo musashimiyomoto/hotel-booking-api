@@ -35,4 +35,22 @@ impl Settings {
             postgres_max_pool: env::var("POSTGRES_MAX_POOL").unwrap_or_else(|_| "5".to_string()),
         }
     }
+
+    pub fn get_redis_url(&self) -> String {
+        format!(
+            "redis://{}:{}/{}",
+            self.redis_host, self.redis_port, self.redis_db
+        )
+    }
+
+    pub fn get_postgres_url(&self) -> String {
+        format!(
+            "postgres://{}:{}@{}:{}/{}",
+            self.postgres_user,
+            self.postgres_password,
+            self.postgres_host,
+            self.postgres_port,
+            self.postgres_db,
+        )
+    }
 }
