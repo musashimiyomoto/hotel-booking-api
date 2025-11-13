@@ -1,1 +1,2 @@
--- Add down migration script here
+DROP TABLE IF EXISTS hotels;
+DROP TABLE IF EXISTS users;

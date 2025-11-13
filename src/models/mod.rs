@@ -1,4 +1,6 @@
 pub mod health;
+pub mod hotels;
+pub mod users;
 
 #[derive(Clone)]
 pub struct AppState {

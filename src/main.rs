@@ -1,4 +1,5 @@
 mod enums;
+mod middleware;
 mod models;
 mod resources;
 mod routes;
