@@ -1,11 +1,10 @@
 use axum::{
+    Json,
     extract::{Path, State},
     http::StatusCode,
-    Json,
 };
 
-use crate::models::{hotels::*, AppState};
-
+use crate::models::{AppState, hotels::*};
 
 #[utoipa::path(
     get,
@@ -107,7 +106,6 @@ pub async fn create_hotel(
     Ok((StatusCode::CREATED, Json(HotelResponse::from(hotel))))
 }
 
-
 #[utoipa::path(
     put,
     path = "/hotels/{id}",
@@ -153,7 +151,6 @@ pub async fn update_hotel(
 
     Ok(Json(HotelResponse::from(hotel)))
 }
-
 
 #[utoipa::path(
     delete,

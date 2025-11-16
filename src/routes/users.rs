@@ -1,13 +1,12 @@
 use axum::{
+    Json,
     extract::State,
     http::{HeaderMap, StatusCode},
-    Json,
 };
 use chrono::Utc;
-use jsonwebtoken::{encode, EncodingKey};
+use jsonwebtoken::{EncodingKey, encode};
 
-use crate::{utils, models};
-
+use crate::{models, utils};
 
 #[utoipa::path(
     post,
@@ -46,7 +45,7 @@ pub async fn register(
     let user = sqlx::query_as::<_, models::users::User>(
         "INSERT INTO users (email, password_hash, first_name, last_name) 
          VALUES ($1, $2, $3, $4) 
-         RETURNING id, email, password_hash, first_name, last_name, created_at, updated_at"
+         RETURNING id, email, password_hash, first_name, last_name, created_at, updated_at",
     )
     .bind(&payload.email)
     .bind(&password_hash)
@@ -75,7 +74,7 @@ pub async fn register(
     let token = encode(
         &jsonwebtoken::Header::default(),
         &claims,
-        &EncodingKey::from_secret(&state.jwt_secret.as_bytes()),
+        &EncodingKey::from_secret(state.jwt_secret.as_bytes()),
     )
     .map_err(|e| {
         tracing::error!("Failed to generate token: {}", e);
@@ -93,7 +92,6 @@ pub async fn register(
         }),
     ))
 }
-
 
 #[utoipa::path(
     post,
@@ -134,7 +132,10 @@ pub async fn login(
     })?;
 
     if !password_valid {
-        return Err((StatusCode::BAD_REQUEST, "Invalid email or password".to_string()));
+        return Err((
+            StatusCode::BAD_REQUEST,
+            "Invalid email or password".to_string(),
+        ));
     }
 
     let now = Utc::now().timestamp();
@@ -148,7 +149,7 @@ pub async fn login(
     let token = encode(
         &jsonwebtoken::Header::default(),
         &claims,
-        &EncodingKey::from_secret(&state.jwt_secret.as_bytes()),
+        &EncodingKey::from_secret(state.jwt_secret.as_bytes()),
     )
     .map_err(|e| {
         tracing::error!("Failed to generate token: {}", e);
@@ -235,7 +236,7 @@ pub async fn update_profile(
     let user: models::users::User = sqlx::query_as::<_, models::users::User>(
         "UPDATE users SET first_name = $1, last_name = $2, updated_at = CURRENT_TIMESTAMP 
          WHERE id = $3 
-         RETURNING id, email, password_hash, first_name, last_name, created_at, updated_at"
+         RETURNING id, email, password_hash, first_name, last_name, created_at, updated_at",
     )
     .bind(&payload.first_name)
     .bind(&payload.last_name)
