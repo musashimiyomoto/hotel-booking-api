@@ -29,7 +29,9 @@ pub async fn live() -> Result<Json<models::health::HealthLiveResponse>, (StatusC
     ),
     tag = "health"
 )]
-pub async fn ready(state: State<models::AppState>) -> Result<Json<models::health::HealthReadyResponse>, (StatusCode, String)> {
+pub async fn ready(
+    state: State<models::AppState>,
+) -> Result<Json<models::health::HealthReadyResponse>, (StatusCode, String)> {
     tracing::info!("GET /health/ready endpoint called");
 
     let postgres_status = match sqlx::query("SELECT 1").fetch_one(&state.pool).await {
@@ -56,9 +58,18 @@ pub async fn ready(state: State<models::AppState>) -> Result<Json<models::health
         },
     ];
 
-    if !services.iter().all(|s| s.status == enums::HealthStatus::Ok.to_string()) {
-        return Err((StatusCode::SERVICE_UNAVAILABLE, "One or more services are not ready".to_string()));
+    if !services
+        .iter()
+        .all(|s| s.status == enums::HealthStatus::Ok.to_string())
+    {
+        return Err((
+            StatusCode::SERVICE_UNAVAILABLE,
+            "One or more services are not ready".to_string(),
+        ));
     }
 
-    Ok(Json(models::health::HealthReadyResponse { status: enums::HealthStatus::Ok.to_string(), services }))
+    Ok(Json(models::health::HealthReadyResponse {
+        status: enums::HealthStatus::Ok.to_string(),
+        services,
+    }))
 }

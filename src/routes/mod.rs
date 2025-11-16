@@ -58,12 +58,21 @@ pub fn create_routers(state: models::AppState) -> Router {
             "/profile",
             routing::get(users::profile).put(users::update_profile),
         )
-        .layer(axum::middleware::from_fn_with_state(state.clone(), middleware::auth_middleware));
+        .layer(axum::middleware::from_fn_with_state(
+            state.clone(),
+            middleware::auth_middleware,
+        ));
 
     let protected_hotel_routes = Router::new()
         .route("/", routing::post(hotels::create_hotel))
-        .route("/{id}", routing::put(hotels::update_hotel).delete(hotels::delete_hotel))
-        .layer(axum::middleware::from_fn_with_state(state.clone(), middleware::auth_middleware));
+        .route(
+            "/{id}",
+            routing::put(hotels::update_hotel).delete(hotels::delete_hotel),
+        )
+        .layer(axum::middleware::from_fn_with_state(
+            state.clone(),
+            middleware::auth_middleware,
+        ));
 
     Router::new()
         .route("/health/live", routing::get(health::live))
