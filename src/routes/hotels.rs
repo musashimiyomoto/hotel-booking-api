@@ -72,9 +72,11 @@ pub async fn get_hotel(
     path = "/hotels",
     tag = "hotels",
     request_body = CreateHotelRequest,
+    security(("bearer_auth" = [])),
     responses(
         (status = http::StatusCode::CREATED, description = "Hotel created", body = HotelResponse),
         (status = http::StatusCode::BAD_REQUEST, description = "Invalid input"),
+        (status = http::StatusCode::UNAUTHORIZED, description = "Unauthorized"),
         (status = http::StatusCode::INTERNAL_SERVER_ERROR, description = "Internal server error")
     )
 )]
@@ -114,8 +116,10 @@ pub async fn create_hotel(
         ("id" = i32, Path, description = "Hotel ID")
     ),
     request_body = CreateHotelRequest,
+    security(("bearer_auth" = [])),
     responses(
         (status = http::StatusCode::OK, description = "Hotel updated", body = HotelResponse),
+        (status = http::StatusCode::UNAUTHORIZED, description = "Unauthorized"),
         (status = http::StatusCode::NOT_FOUND, description = "Hotel not found"),
         (status = http::StatusCode::INTERNAL_SERVER_ERROR, description = "Internal server error")
     )
@@ -158,8 +162,10 @@ pub async fn update_hotel(
     params(
         ("id" = i32, Path, description = "Hotel ID")
     ),
+    security(("bearer_auth" = [])),
     responses(
         (status = http::StatusCode::NO_CONTENT, description = "Hotel deleted"),
+        (status = http::StatusCode::UNAUTHORIZED, description = "Unauthorized"),
         (status = http::StatusCode::NOT_FOUND, description = "Hotel not found"),
         (status = http::StatusCode::INTERNAL_SERVER_ERROR, description = "Internal server error")
     )

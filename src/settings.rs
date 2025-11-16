@@ -14,6 +14,9 @@ pub struct Settings {
     pub postgres_port: String,
     pub postgres_db: String,
     pub postgres_max_pool: String,
+
+    pub jwt_secret: String,
+    pub jwt_expire_hours: i64,
 }
 
 impl Settings {
@@ -33,6 +36,9 @@ impl Settings {
             postgres_port: env::var("POSTGRES_PORT").unwrap_or_else(|_| "5432".to_string()),
             postgres_db: env::var("POSTGRES_DB").unwrap_or_else(|_| "postgres".to_string()),
             postgres_max_pool: env::var("POSTGRES_MAX_POOL").unwrap_or_else(|_| "5".to_string()),
+
+            jwt_secret: env::var("JWT_SECRET").unwrap_or_else(|_| "your-secret-key-change-in-production".to_string()),
+            jwt_expire_hours: env::var("JWT_EXPIRE_HOURS").unwrap_or_else(|_| "24".to_string()).parse().unwrap_or(24),
         }
     }
 

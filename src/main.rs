@@ -4,6 +4,7 @@ mod models;
 mod resources;
 mod routes;
 mod settings;
+mod utils;
 
 use tower_http::cors;
 
@@ -29,7 +30,12 @@ async fn init_state(settings: &settings::Settings) -> models::AppState {
 
     tracing::info!("Initialized state");
 
-    models::AppState { pool, redis_conn }
+    models::AppState {
+        pool,
+        redis_conn,
+        jwt_secret: settings.jwt_secret.clone(),
+        jwt_expire_hours: settings.jwt_expire_hours,
+    }
 }
 
 #[tokio::main]

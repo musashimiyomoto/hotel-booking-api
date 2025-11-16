@@ -6,4 +6,6 @@ pub mod users;
 pub struct AppState {
     pub pool: sqlx::Pool<sqlx::Postgres>,
     pub redis_conn: redis::aio::MultiplexedConnection,
+    pub jwt_secret: String,
+    pub jwt_expire_hours: i64,
 }
