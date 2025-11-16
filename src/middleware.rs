@@ -26,7 +26,6 @@ pub async fn auth_middleware(
 }
 
 
-
 impl IntoResponse for enums::AuthError {
     fn into_response(self) -> Response {
         let (status, error_message) = match self {
