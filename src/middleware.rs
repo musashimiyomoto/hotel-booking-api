@@ -5,8 +5,7 @@ use axum::{
     response::{IntoResponse, Response},
 };
 
-use crate::{models, utils, enums};
-
+use crate::{enums, models, utils};
 
 pub async fn auth_middleware(
     State(app_state): State<models::AppState>,
@@ -20,16 +19,20 @@ pub async fn auth_middleware(
         .and_then(|h| h.strip_prefix("Bearer "))
         .ok_or(enums::AuthError::MissingToken)?;
 
-    request.extensions_mut().insert(utils::extract_user_from_token(token, &app_state.jwt_secret).map_err(|_| enums::AuthError::InvalidToken)?);
+    request.extensions_mut().insert(
+        utils::extract_user_from_token(token, &app_state.jwt_secret)
+            .map_err(|_| enums::AuthError::InvalidToken)?,
+    );
 
     Ok(next.run(request).await)
 }
 
-
 impl IntoResponse for enums::AuthError {
     fn into_response(self) -> Response {
         let (status, error_message) = match self {
-            enums::AuthError::MissingToken => (StatusCode::UNAUTHORIZED, "Missing authorization token"),
+            enums::AuthError::MissingToken => {
+                (StatusCode::UNAUTHORIZED, "Missing authorization token")
+            }
             enums::AuthError::InvalidToken => (StatusCode::UNAUTHORIZED, "Invalid token"),
         };
         (status, error_message).into_response()

@@ -1,7 +1,6 @@
-use jsonwebtoken::{decode, DecodingKey, Validation};
+use jsonwebtoken::{DecodingKey, Validation, decode};
 
-use crate::{models};
-
+use crate::models;
 
 pub fn extract_user_from_token(token: &str, secret: &str) -> Result<models::users::Claims, String> {
     decode::<models::users::Claims>(
