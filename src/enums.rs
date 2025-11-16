@@ -1,5 +1,12 @@
 use std::fmt;
 
+#[derive(Debug)]
+pub enum AuthError {
+    MissingToken,
+    InvalidToken,
+}
+
+#[derive(Debug)]
 pub enum HealthStatus {
     Ok,
     Unavailable,
@@ -14,6 +21,7 @@ impl fmt::Display for HealthStatus {
     }
 }
 
+#[derive(Debug)]
 pub enum ServiceName {
     Redis,
     Postgres,
