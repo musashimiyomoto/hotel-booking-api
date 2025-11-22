@@ -34,7 +34,7 @@ up:
 	fi
 
 	@echo "🚀 Starting Docker Compose..."
-	docker-compose up -d
+	docker compose up -d
 	@echo "⏳ Waiting for API to be ready..."
 
 	@for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15; do \
@@ -50,10 +50,10 @@ up:
 
 down:
 	@echo "🛑 Stopping Docker Compose..."
-	docker-compose down
+	docker compose down
 
 logs:
-	docker-compose logs -f
+	docker compose logs -f
 
 restart: down up
 
@@ -95,6 +95,6 @@ check: fmt-check lint
 
 clean:
 	@echo "🧹 Cleaning up..."
-	docker-compose down -v
+	docker compose down -v
 	cargo clean
 	@echo "✅ Clean complete!"
