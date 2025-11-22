@@ -78,7 +78,7 @@ pub async fn get_hotel(
     security(("bearer_auth" = [])),
     responses(
         (status = http::StatusCode::CREATED, description = "Hotel created", body = models::hotels::HotelResponse),
-        (status = http::StatusCode::BAD_REQUEST, description = "Invalid input"),
+        (status = http::StatusCode::UNPROCESSABLE_ENTITY, description = "Invalid input"),
         (status = http::StatusCode::UNAUTHORIZED, description = "Unauthorized"),
         (status = http::StatusCode::INTERNAL_SERVER_ERROR, description = "Internal server error")
     )
