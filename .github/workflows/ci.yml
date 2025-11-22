@@ -37,11 +37,8 @@ jobs:
         path: target
         key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
 
-    - name: Build
-      run: cargo build
-
     - name: Check format
-      run: make fmt
+      run: make fmt-check
     
     - name: Check lint
       run: make lint
