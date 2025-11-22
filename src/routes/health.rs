@@ -34,34 +34,10 @@ pub async fn ready(
 ) -> Result<Json<models::health::HealthReadyResponse>, (StatusCode, String)> {
     tracing::info!("GET /health/ready endpoint called");
 
-    let postgres_status = match sqlx::query("SELECT 1").fetch_one(&state.pool).await {
-        Ok(_) => enums::HealthStatus::Ok,
-        Err(_) => enums::HealthStatus::Unavailable,
-    };
+    let services = state.services.health_service.check_services().await;
+    let is_ready = state.services.health_service.is_ready().await;
 
-    let redis_status = match redis::cmd("PING")
-        .exec_async(&mut state.redis_conn.clone())
-        .await
-    {
-        Ok(_) => enums::HealthStatus::Ok,
-        Err(_) => enums::HealthStatus::Unavailable,
-    };
-
-    let services = vec![
-        models::health::HealthServiceResponse {
-            name: enums::ServiceName::Postgres.to_string(),
-            status: postgres_status.to_string(),
-        },
-        models::health::HealthServiceResponse {
-            name: enums::ServiceName::Redis.to_string(),
-            status: redis_status.to_string(),
-        },
-    ];
-
-    if !services
-        .iter()
-        .all(|s| s.status == enums::HealthStatus::Ok.to_string())
-    {
+    if !is_ready {
         return Err((
             StatusCode::SERVICE_UNAVAILABLE,
             "One or more services are not ready".to_string(),
