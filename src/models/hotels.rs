@@ -26,6 +26,15 @@ pub struct CreateHotelRequest {
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct UpdateHotelRequest {
+    pub name: Option<String>,
+    pub description: Option<String>,
+    pub address: Option<String>,
+    pub city: Option<String>,
+    pub country: Option<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct HotelResponse {
     pub id: i32,
     pub name: String,

@@ -1,8 +1,10 @@
 mod enums;
 mod middleware;
 mod models;
+mod repositories;
 mod resources;
 mod routes;
+mod services;
 mod settings;
 mod utils;
 
@@ -31,10 +33,9 @@ async fn init_state(settings: &settings::Settings) -> models::AppState {
     tracing::info!("Initialized state");
 
     models::AppState {
-        pool,
-        redis_conn,
         jwt_secret: settings.jwt_secret.clone(),
         jwt_expire_hours: settings.jwt_expire_hours,
+        services: services::Services::new(pool, redis_conn),
     }
 }
 
